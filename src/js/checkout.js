@@ -15,5 +15,11 @@ document
 document.querySelector("#checkoutSubmit").addEventListener("click", (e) => {
   e.preventDefault();
 
-  order.checkout();
+  // ⭐ NEW: Run form validation first
+  const valid = order.validateForm();
+
+  if (valid) {
+    order.checkout();
+  }
 });
+

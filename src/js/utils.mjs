@@ -53,14 +53,29 @@ async function loadTemplate(path) {
 }
 
 export async function loadHeaderFooter() {
-  const headerTemplate = await loadTemplate("../partials/header.html");
-  const footerTemplate = await loadTemplate("../partials/footer.html");
+  const headerTemplate = await loadTemplate("/partials/header.html");
+  const footerTemplate = await loadTemplate("/partials/footer.html");
 
   const headerElement = document.querySelector("#main-header");
   const footerElement = document.querySelector("#main-footer");
 
-  renderWithTemplate(headerTemplate, headerElement);
-  renderWithTemplate(footerTemplate, footerElement);
+  if (headerElement) renderWithTemplate(headerTemplate, headerElement);
+  if (footerElement) renderWithTemplate(footerTemplate, footerElement);
+}
 
- 
+export function alertMessage(message, scroll = true) {
+  const container = document.createElement("div");
+  container.classList.add("alert-box");
+
+  container.innerHTML = `
+    <div class="alert">
+      <p>${message}</p>
+    </div>
+  `;
+
+  document.querySelector("main").prepend(container);
+
+  if (scroll) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 }

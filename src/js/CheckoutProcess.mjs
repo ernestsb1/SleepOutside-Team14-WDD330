@@ -1,4 +1,4 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage,  alertMessage } from "./utils.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 
 const services = new ExternalServices();
@@ -94,10 +94,22 @@ export default class CheckoutProcess {
     //console.log(order);
 
     try {
+      // send to server
       const response = await services.checkout(order);
-      console.log(response);
+      console.log("Checkout Successful:", response);
+
+      // clear cart
+      localStorage.removeItem("so-cart");
+
+      // redirect to success page
+      window.location.href = "./success.html";
     } catch (err) {
-      console.log(err);
+      console.log("Checkout Error:", err);
+
+      // display error popup
+      alertMessage(
+        `Unable to process order. ${err.message?.message || "Please try again."}`
+      );
     }
   }
 }

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Tent A",
+    "price": 120,
+    "description": "Lightweight 2-person tent."
+  },
+  {
+    "name": "Sleeping Bag B",
+    "price": 60,
+    "description": "Warm and compact sleeping bag."
+  },
+  {
+    "name": "Camping Stove C",
+    "price": 35,
+    "description": "Portable stove for outdoor cooking."
+  },
+   {
+    "name": "Hiking Lantern D",
+    "price": 25,
+    "description": "Rechargeable LED lantern with long battery life for night camping."
+  }
+]
