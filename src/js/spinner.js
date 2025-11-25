@@ -1,36 +1,40 @@
-const spinnerOverlay = document.getElementById('spinnerOverlay');
-const productContainer = document.getElementById('productContainer');
+// spinner.js
 
 export function showSpinner() {
-  spinnerOverlay.classList.add('active');
+  const spinner = document.getElementById('spinner');
+  if (spinner) spinner.classList.remove('hidden');
 }
 
 export function hideSpinner() {
-  spinnerOverlay.classList.remove('active');
+  const spinner = document.getElementById('spinner');
+  if (spinner) spinner.classList.add('hidden');
 }
 
+// Load products with spinner
 export async function loadProducts() {
-  showSpinner();
-  try {
-    // Simulate loading delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  showSpinner(); // show spinner before loading
 
+  try {
     const response = await fetch('/data/products.json');
     const products = await response.json();
 
-    products.forEach(product => {
+    const container = document.getElementById('product-container');
+    container.innerHTML = '';
+
+    products.forEach(item => {
       const card = document.createElement('div');
       card.className = 'product-card';
       card.innerHTML = `
-        <h3>${product.name}</h3>
-        <p>Price: $${product.price}</p>
-        <p>${product.description}</p>
+        <h3>${item.name}</h3>
+        <p>${item.description}</p>
+        <p>Price: $${item.price}</p>
       `;
-      productContainer.appendChild(card);
+      container.appendChild(card);
     });
+
   } catch (error) {
-    console.error('Error loading products:', error);
+    console.error('Failed to load products', error);
   } finally {
-    hideSpinner();
+    hideSpinner(); // hide spinner when done
   }
 }

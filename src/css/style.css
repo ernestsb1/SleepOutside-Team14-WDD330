@@ -460,57 +460,25 @@ footer {
 
 
 /* Spinner styling */
-.spinner-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.spinner-overlay.active {
-  visibility: visible;
-  opacity: 1;
-}
-
 .spinner {
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid #2b6cb0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top-color: #1d4ed8;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
   animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.hidden {
+  display: none;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Product container grid */
-.product-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.product-card {
-  background-color: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-}
-.product-card:hover {
-  transform: scale(1.05);
+  to { transform: rotate(360deg); }
 }
 
