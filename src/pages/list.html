@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reading List</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Book Explorer</h1>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="/lists.html">Reading Lists</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h2 id="list-title">Reading List</h2>
+    <div id="list-books" class="book-grid"></div>
+  </main>
+
+  <footer>© 2025 Book Explorer</footer>
+
+  <script type="module">
+    import { getListBooks, removeFromList } from '../js/storage.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const listName = params.get('list');
+    document.getElementById('list-title').textContent = listName || 'List';
+
+    const container = document.getElementById('list-books');
+    const books = getListBooks(listName || '');
+
+    if (!books.length) {
+      container.innerHTML = '<p>No books in this list.</p>';
+    } else {
+      books.forEach(book => {
+        const div = document.createElement('div');
+        div.className = 'book-card';
+        div.innerHTML = `
+          <img src="${book.thumbnail || '../images/hero-book.jpg'}" alt="${book.title}">
+          <h3>${book.title}</h3>
+          <p>${(book.authors || []).join(', ')}</p>
+          <div class="actions">
+            <a class="btn small" href="../pages/book.html?id=${encodeURIComponent(book.id)}">View</a>
+            <button class="btn small danger remove-btn" data-id="${book.id}">Remove</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      container.addEventListener('click', e => {
+        if (e.target.classList.contains('remove-btn')) {
+          const id = e.target.dataset.id;
+          removeFromList(listName, id);
+          location.reload();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

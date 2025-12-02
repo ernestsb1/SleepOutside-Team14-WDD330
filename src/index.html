@@ -1,64 +1,77 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sleep Outside | Home</title>
-  <link rel="stylesheet" href="/css/style.css" />
-  <script src="js/main.js" type="module"></script>
-  <script src="js/Alert.js" type="module"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Book Explorer — Home</title>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
-
 <body>
-  <header class="divider" id="main-header"></header>
-  <main class="divider">
-    <div id="test"></div>
-    <div class="hero">
-      <img src="/images/banner-sm.jpg" srcset="images/banner-sm.jpg 500w, images/banner.jpg"
-        alt="image of a high mountain lake" />
-      <div class="logo logo--square">
-        <img src="/images/noun_Tent_2517.svg" alt="tent image for logo" />
-        <div>Sleep<span class="highlight">Outside</span></div>
-      </div>
-      <div class="mission">
-        <p>
-          Our mission is to provide you with everything you need to sleep
-          outside comfortably at an affordable price.
-        </p>
-      </div>
-    </div>
+  <header class="site-header">
+    <h1>Book Explorer</h1>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./pages/lists.html">Reading Lists</a>
+    </nav>
+  </header>
 
-    <section class="products">
-      <ul class="product-grid">
-        <li>
-          <a href="product_listing/index.html?category=tents">
-            <img src="https://byui-cse.github.io/wdd330-ww-course/images/category-tents.svg" alt="Tents" />
-            <h2>Tents</h2>
-          </a>
-        </li>
-        <li>
-          <a href="product_listing/index.html?category=backpacks">
-            <img src="https://byui-cse.github.io/wdd330-ww-course/images/category-backpacks.svg" alt="Backpacks" />
-            <h2>Backpacks</h2>
-          </a>
-        </li>
-        <li>
-          <a href="product_listing/index.html?category=sleeping-bags">
-            <img src="https://byui-cse.github.io/wdd330-ww-course/images/category-sleepingbags.svg" alt="Sleeping Bags" />
-            <h2>Sleeping Bags</h2>
-          </a>
-        </li>
-        <li>
-          <a href="product_listing/index.html?category=hammocks">
-            <img src="https://byui-cse.github.io/wdd330-ww-course/images/category-hammocks.svg" alt="Hammocks" />
-            <h2>Hammocks</h2>
-          </a>
-        </li>
-      </ul>
+  <main class="container">
+    <section class="hero">
+      <img src="./images/hero-book.jpg" alt="shelf of books (hero image)">
+      <div class="hero-overlay">
+<h2>
+Explore a world of books at your fingertips.  
+Search for your favorite titles or authors with ease.  
+Discover new releases and hidden gems that spark your curiosity.  
+Save the books you love to your personal reading list.  
+Rate and track your reading journey as you go.  
+Organize your lists and revisit them anytime you want.  
+Stay inspired with recommendations tailored to your interests.  
+Learn, enjoy, and share your favorite reads with friends.  
+Dive into stories that entertain, educate, and excite.  
+Start your next reading adventure today!
+</h2>
+
+      </div>
+    </section>
+
+    <section class="controls">
+      <div class="search-bar">
+        <input id="search-input" type="search" placeholder="Search books by title, author, or ISBN..." />
+        <button id="search-btn" class="btn">Search</button>
+      </div>
+
+ <div class="toggles">
+        <select id="category-select" aria-label="Filter by category">
+          <option value="">All categories</option>
+          <option value="fiction">Fiction</option>
+          <option value="history">History</option>
+          <option value="science">Science</option>
+          <option value="biography">Biography</option>
+          <option value="technology">Technology</option>
+        </select>
+
+      <div class="toggles">
+        <button id="toggle-featured" class="btn outline">Toggle Featured</button>
+        <button id="toggle-all" class="btn outline">Toggle All</button>
+      </div>
+    </section>
+
+    <section id="featured-section" class="books-section" aria-hidden="true" style="display:none">
+      <h2>Featured</h2>
+      <div id="featured-container" class="book-grid"></div>
+    </section>
+
+    <section id="all-section" class="books-section" aria-hidden="true" style="display:none">
+      <h2>Results</h2>
+      <div id="results-container" class="book-grid"></div>
     </section>
   </main>
-  <footer id="main-footer"></footer>
-</body>
 
+  <footer>
+    <p>© 2025 Book Explorer    || ERNEST OHWOJEHERI </p>
+  </footer>
+
+  <script type="module" src="/js/search-ui.js"></script>
+</body>
 </html>
