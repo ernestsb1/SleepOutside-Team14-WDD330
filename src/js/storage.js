@@ -1,4 +1,3 @@
-// js/storage.js — FINAL CLEAN VERSION
 
 // ===== Keys for localStorage =====
 const SINGLE_LIST_KEY = 'be_reading_list_v1';   // One global reading list
@@ -97,22 +96,17 @@ export function setProgress(bookId, pagesRead) {
 // ================ 4. MULTIPLE READING LISTS ====================
 // ===============================================================
 export function getLists() {
-  try {
-    const lists = JSON.parse(localStorage.getItem(MULTI_LIST_KEY)) || {};
-    
-    // Automatically create a default list if none exists
-    if (Object.keys(lists).length === 0) {
-      lists['My Reading List'] = [];
-      localStorage.setItem(MULTI_LIST_KEY, JSON.stringify(lists));
-    }
-
-    return lists;
+  try { 
+    return JSON.parse(localStorage.getItem(MULTI_LIST_KEY)) || {}; 
   } catch {
-    const lists = { 'My Reading List': [] };
-    localStorage.setItem(MULTI_LIST_KEY, JSON.stringify(lists));
-    return lists;
+    return {};
   }
 }
+
+function saveLists(lists) {
+  localStorage.setItem(MULTI_LIST_KEY, JSON.stringify(lists));
+}
+
 
 // Create a new list by name
 export function createList(name) {
