@@ -97,15 +97,21 @@ export function setProgress(bookId, pagesRead) {
 // ================ 4. MULTIPLE READING LISTS ====================
 // ===============================================================
 export function getLists() {
-  try { 
-    return JSON.parse(localStorage.getItem(MULTI_LIST_KEY)) || {}; 
-  } catch {
-    return {};
-  }
-}
+  try {
+    const lists = JSON.parse(localStorage.getItem(MULTI_LIST_KEY)) || {};
+    
+    // Automatically create a default list if none exists
+    if (Object.keys(lists).length === 0) {
+      lists['My Reading List'] = [];
+      localStorage.setItem(MULTI_LIST_KEY, JSON.stringify(lists));
+    }
 
-function saveLists(lists) {
-  localStorage.setItem(MULTI_LIST_KEY, JSON.stringify(lists));
+    return lists;
+  } catch {
+    const lists = { 'My Reading List': [] };
+    localStorage.setItem(MULTI_LIST_KEY, JSON.stringify(lists));
+    return lists;
+  }
 }
 
 // Create a new list by name
