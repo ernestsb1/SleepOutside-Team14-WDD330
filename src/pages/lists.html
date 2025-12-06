@@ -11,7 +11,7 @@
     <h1>Book Explorer</h1>
     <nav>
       <a href="../index.html">Home</a>
-      <a href="./lists.html">Reading Lists</a>
+      <a href="lists.html">Reading Lists</a>
     </nav>
   </header>
 
@@ -19,25 +19,167 @@
     <section>
       <h2>Your Reading Lists</h2>
 
-      <!-- New list creation -->
-      <div class="new-list">
-        <input type="text" id="new-list-name" placeholder="New list name">
+      <!-- Create new list (separate from search) -->
+      <div class="new-list-row" style="margin-bottom:16px;">
+        <input id="new-list-name" type="text" placeholder="New list name (e.g. 'My Favorites')" />
         <button id="create-list-btn" class="btn">Create List</button>
       </div>
 
-      <!-- Container for all lists -->
+      <!-- Search bar (filters across lists) -->
+      <div class="search-bar" style="margin-bottom:16px;">
+        <input id="search-input" type="text" placeholder="Search books across your lists..." />
+        <button id="search-btn" class="btn">Search</button>
+        <button id="clear-search-btn" class="btn outline">Clear</button>
+      </div>
+
+      <!-- Lists container -->
       <div id="lists-container" class="lists-grid"></div>
-      <div id="empty-lists" style="display:none">
-        <p>No saved lists yet. Add books from the home page.</p>
+
+      <div id="empty-lists" style="display:none; margin-top:16px;">
+        <p>No lists yet. Create a list using the box above or add books from the Home page.</p>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>© 2025 Book Explorer || ERNEST OHWOJEHERI</p>
+    <p>© 2025 Book Explorer  || ERNEST OHWOJEHERI</p>
   </footer>
 
-  <!-- Link to external lists.js -->
-  <script type="module" src="../js/lists.js"></script>
+  <script type="module">
+    import {
+      getLists,
+      createList,
+      getListBooks,
+      removeFromList
+    } from '../js/storage.js';
+
+    import { createRatingStars } from '../js/rating-stars.js';
+
+    // DOM refs
+    const listsContainer = document.getElementById('lists-container');
+    const empty = document.getElementById('empty-lists');
+    const newListInput = document.getElementById('new-list-name');
+    const createBtn = document.getElementById('create-list-btn');
+
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+
+    // Render all lists and their books (optionally filtered by query)
+    function renderAllLists(filter = '') {
+      const lists = getLists();
+      listsContainer.innerHTML = '';
+
+      const listNames = Object.keys(lists);
+
+      if (listNames.length === 0) {
+        empty.style.display = 'block';
+        return;
+      } else {
+        empty.style.display = 'none';
+      }
+
+      const q = (filter || '').trim().toLowerCase();
+
+      listNames.forEach(listName => {
+        const listDiv = document.createElement('section');
+        listDiv.className = 'reading-list';
+        listDiv.innerHTML = `
+          <div class="reading-list-header" style="display:flex;align-items:center;justify-content:space-between;">
+            <h3 style="margin:0;">${listName}</h3>
+            <small>${(getListBooks(listName) || []).length} book(s)</small>
+          </div>
+          <div class="list-books" id="list-${cssSafe(listName)}" style="margin-top:8px;"></div>
+        `;
+        listsContainer.appendChild(listDiv);
+
+        const booksContainer = listDiv.querySelector(`#list-${cssSafe(listName)}`);
+        const books = getListBooks(listName) || [];
+
+        // Filter books if a query is present
+        const visibleBooks = q ? books.filter(book =>
+          (book.title || '').toLowerCase().includes(q) ||
+          (book.authors || []).join(' ').toLowerCase().includes(q)
+        ) : books;
+
+        if (!visibleBooks.length) {
+          booksContainer.innerHTML = '<p style="opacity:.8">No matching books in this list.</p>';
+        } else {
+          visibleBooks.forEach(book => {
+            const card = document.createElement('article');
+            card.className = 'book-card';
+            card.innerHTML = `
+              <img src="${book.thumbnail || '../images/hero-book.jpg'}" alt="${escapeHtml(book.title || '')}" />
+              <div class="book-info">
+                <h4>${escapeHtml(book.title || 'Untitled')}</h4>
+                <p class="author">${escapeHtml((book.authors || []).join(', '))}</p>
+                <div class="list-actions" style="margin-top:8px;">
+                  <a class="btn small" href="book.html?id=${encodeURIComponent(book.id)}">View</a>
+                  <button class="btn small danger remove-btn" data-list="${escapeAttr(listName)}" data-id="${escapeAttr(book.id)}">Remove</button>
+                  <div class="rating-container" id="rating-${escapeAttr(book.id)}" style="display:inline-block;margin-left:8px;"></div>
+                </div>
+              </div>
+            `;
+            booksContainer.appendChild(card);
+
+            // attach rating stars
+            const ratingDiv = card.querySelector(`#rating-${escapeAttr(book.id)}`);
+            if (ratingDiv) createRatingStars(ratingDiv, book.id);
+          });
+        }
+      });
+
+      // Hook remove buttons (delegated)
+      listsContainer.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const listName = btn.dataset.list;
+          const id = btn.dataset.id;
+          if (!listName || !id) return;
+          // confirm
+          if (!confirm('Remove this book from "' + listName + '"?')) return;
+          removeFromList(listName, id);
+          renderAllLists(searchInput.value);
+        });
+      });
+    }
+
+    // Create list handler
+    createBtn.addEventListener('click', () => {
+      const name = (newListInput.value || '').trim();
+      if (!name) {
+        alert('Please enter a list name.');
+        return;
+      }
+      createList(name);
+      newListInput.value = '';
+      renderAllLists();
+    });
+
+    // Search handlers (search across all lists)
+    function handleSearch() {
+      const q = (searchInput.value || '').trim();
+      renderAllLists(q);
+    }
+    searchBtn.addEventListener('click', handleSearch);
+    searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') handleSearch(); });
+
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      renderAllLists();
+    });
+
+    // Utility: make a CSS-safe id string
+    function cssSafe(name) {
+      return encodeURIComponent(name).replace(/%/g, '');
+    }
+    function escapeHtml(s) {
+      if (!s) return '';
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function escapeAttr(s) { return (s+'').replace(/"/g, '&quot;'); }
+
+    // initial render
+    renderAllLists();
+  </script>
 </body>
 </html>

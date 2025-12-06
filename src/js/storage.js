@@ -1,3 +1,4 @@
+// js/storage.js — FINAL CLEAN VERSION
 
 // ===== Keys for localStorage =====
 const SINGLE_LIST_KEY = 'be_reading_list_v1';   // One global reading list
@@ -106,7 +107,6 @@ export function getLists() {
 function saveLists(lists) {
   localStorage.setItem(MULTI_LIST_KEY, JSON.stringify(lists));
 }
-
 
 // Create a new list by name
 export function createList(name) {
